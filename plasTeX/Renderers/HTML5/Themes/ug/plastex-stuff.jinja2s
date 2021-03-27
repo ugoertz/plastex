@@ -1,0 +1,111 @@
+name: segment
+<div class="segment" id="{{ obj.id }}"><b>({{ obj.ref }}) {{ obj.title }}</b>
+{{ obj }}
+</div>
+
+
+name: assertionlist
+<ol class="assertionlist">
+{% for item in obj %}
+  <li>{{ item }}</li>
+{% endfor %}
+</ol>
+
+
+name: definitionlist
+<ol class="definitionlist">
+{% for item in obj %}
+  <li>{{ item }}</li>
+{% endfor %}
+</ol>
+
+
+name: equivlist
+<ol class="equivlist">
+{% for item in obj %}
+  <li>{{ item }}</li>
+{% endfor %}
+</ol>
+
+
+name: proclamation
+<div class="proclamation" id="{{ obj.id }}">
+    <div class="proclamation_heading">
+    <b>{{ obj.title }} {{ obj.ref }}</b> {% if obj.attributes['name'] %}({{ obj.attributes['name'] }}){% endif %}
+    </div>
+    <div class="proclamation_content" style="font-style: italic;">
+    {{ obj }}
+    </div>
+</div>
+
+
+name: remark
+<div class="remark">
+    <div class="remark_heading">
+    <b>{{ obj.title }} {{ obj.ref }}</b>
+    </div>
+    <div class="remark_content">
+    {{ obj }}
+    </div>
+</div>
+
+
+name: linkbox
+<div style="padding: 5px; background-color: #feffcf;" class="linkbox">
+    <i class="fas fa-link" style="font-size: 400%; opacity: 0.5;"></i>
+
+    <div style="margin-left: 100px; margin-top: -40px;">
+        {{ obj }}
+    </div>
+</div>
+
+name: mycolorbox
+<div style="padding: 5px; background-color: #cefcf9;" class="mycolorbox">
+    <i class="fas fa-paperclip" style="font-size: 400%; opacity: 0.5;"></i>
+
+    <div style="margin-left: 100px; margin-top: -40px;">
+        <p><b>{{ obj.title }}</b></p>
+
+        {{ obj }}
+    </div>
+</div>
+
+
+name: epigraph
+<div style="padding: 5px; background-color: #cefcf9;" class="epigraph">
+    <i class="fas fa-quote-right" style="font-size: 400%; opacity: 0.5;"></i>
+
+    <div style="margin-left: 100px; margin-top: -40px;">
+        {{ obj }}
+    </div>
+</div>
+
+
+name: aufgabe
+<div class="aufgabe">
+    <div class="aufgabe_heading">
+    <b>Aufgabe {{ obj.title }} {{ obj.ref }}</b>
+    </div>
+    <div class="aufgabe_content">
+    {{ obj }}
+    </div>
+    <div class="aufgabe_src">
+<pre>
+{{ obj.source }}
+</pre>
+    </div>
+</div>
+
+
+name: twominipages
+<div class="row">
+<div class="col">{{ obj.attributes.text1 }}</div>
+<div class="col">{{ obj.attributes.text2 }}</div>
+</div>
+
+name: inquotes
+&raquo;{{ obj.attributes.content }}&laquo
+
+
+
+

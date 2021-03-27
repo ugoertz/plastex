@@ -1,0 +1,77 @@
+dl.description dt {font-weight: bold}
+table.list {
+    margin-left: 15px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+table.list td {
+    padding-right: 5px;
+}
+
+
+ol.assertionlist {
+    counter-reset: aolcounter;
+}
+ol.assertionlist > li {
+    list-style: none;
+    list-style-position: inside;
+    position: relative;
+    padding-left: 1em;
+}
+ol.assertionlist > li:before {
+    counter-increment: aolcounter;
+    content: "(" counter(aolcounter) ") ";
+
+    left: -1.5em;
+    top: 2px;
+    display: inline-block;
+    width: 1.8em;
+    position: absolute;
+    // background-color: #ffffff;
+    // text-align: center;
+}
+
+ol.definitionlist {
+    counter-reset: dolcounter;
+}
+ol.definitionlist > li {
+    list-style: none;
+    list-style-position: inside;
+    position: relative;
+    padding-left: 1em;
+}
+ol.definitionlist > li:before {
+    counter-increment: dolcounter;
+    content: "(" counter(dolcounter, lower-alpha) ") ";
+
+    left: -1.5em;
+    top: 2px;
+    display: inline-block;
+    width: 1.8em;
+    position: absolute;
+    // background-color: #ffffff;
+    // text-align: center;
+}
+
+ol.equivlist {
+    counter-reset: olcounter;
+}
+ol.equivlist > li {
+    list-style: none;
+    list-style-position: inside;
+    position: relative;
+    padding-left: 1em;
+}
+ol.equivlist > li:before {
+    counter-increment: olcounter;
+    content: "(" counter(olcounter, lower-roman) ") ";
+
+    left: -1.5em;
+    top: 2px;
+    display: inline-block;
+    width: 1.8em;
+    position: absolute;
+    // background-color: #ffffff;
+    // text-align: center;
+}
+

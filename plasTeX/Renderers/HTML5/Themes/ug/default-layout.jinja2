@@ -1,0 +1,191 @@
+{% set links = obj.links %}
+{% set doc = obj.ownerDocument.getElementsByTagName('document')[0] %}
+{% set toc = doc.tableofcontents if config.html5['display-toc'] else None %}
+{% set rendererdata = obj.ownerDocument.rendererdata['html5'] %}
+{% macro tocEntry(section) %}
+<span class="toc_ref">{{ section.ref.textContent }}</span> <span class="toc_entry">{{ section.tocEntry }}</span>{% endmacro %}
+{% macro isActive(section) %}
+{% if section in links.breadcrumbs %} active{% endif %}
+{% endmacro %}
+{% macro isCurrent(section) %}
+{% if section.url == obj.url %} current{% endif %}
+{% endmacro %}
+{% macro icon(icon, id='', class='') %}
+<svg  {% if id %}id="{{id}}" {% endif %}class="icon icon-{{ icon }} {{ class }}"><use xlink:href="symbol-defs.svg#icon-{{ icon }}"></use></svg>
+{% endmacro %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% if config.html5['use-mathjax'] %}
+<script type="text/x-mathjax-config">
+{% if config.html5['mathjax-dollars'] %}
+   MathJax.Hub.Config({
+       tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+       TeX: {
+           extensions: ["AMSmath.js","AMSsymbols.js",'//math.ug/static/XyJax/extensions/TeX/xypic.js']
+       }
+   });
+{% else %}
+  MathJax.Hub.Config({tex2jax: {inlineMath: [ ['\\(','\\)']]}});
+{% endif %}
+</script>
+<script type="text/javascript" src="{{ config.html5['mathjax-url'] }}">
+</script>
+{% endif %}
+<meta name="generator" content="plasTeX" />
+<meta charset="{{ config.files['output-encoding']}}" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+{% if obj.title %}
+{% if obj.level > config.html5['localtoc-level'] %}
+<title>{{ links.document.title }}: {{ obj.title }}</title>
+{% else %}
+<title>{{ obj.title }}</title>
+{% endif %}
+{% endif %}
+{% if links.next.url %}
+<link rel="next" href="{{ links.next.url }}" title="{{ links.next.title.textContent }}" />
+{% endif %}
+{% if links.prev.url %}
+<link rel="prev" href="{{ links.prev.url }}" title="{{ links.prev.title.textContent }}" />
+{% endif %}
+{% if links.up.url %}
+<link rel="up" href="{{ links.up.url }}" title="{{ links.up.title.textContent }}" />
+{% endif %}
+<link href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+{% for css in rendererdata.get('css', []) %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+<link rel="stylesheet" href="styles/{{ css }}" />
+{% endfor %}
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="js/plastex.js"></script>
+    <script type="text/javascript" src="js/svgxuse.js"></script>
+</head>
+
+<body>
+    <div class="container-lg">
+        <div class="row">
+            <div class="col">
+                {% if links.document.title or toc %}
+                    <header>
+                        <h1 id="doc_title">{{ links.document.title }}</h1>
+                    </header>
+                {% endif %}
+            </div>
+        </div>
+        {% if toc %}
+            <div class="row" id="headcontent">
+                <div class="col">
+                    <h2 style="background-color: #eeeeee; margin-top: 30px; padding: 5px; cursor: pointer;">Inhalt<i class="fas fa-plus float-right"></i></h2>
+                </div>
+            </div>
+            <div class="row" id="contentrow">
+                <div class="col-8">
+                    <ul class="nav flex-column">
+                        {% for section in toc recursive %}
+                            <li class="nav-item">
+                                <a href="{{ section.url }}" class="nav-link {{ isActive(section) }}">{{ tocEntry(section) }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-4">
+                    <ul class="nav flex-column">
+                    {% if rendererdata.pdfname %}
+                        <li class="mt-5">
+                            <a href="pdf/{{ rendererdata.pdfname }}.pdf" class="nav-link">pdf</a>
+                        </li>
+                    {% endif %}
+                    <li class="mt-5">
+                        <a href="/impressum.html" class="nav-link">About / Impressum</a>
+                    </li>
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col">
+                {% if obj.level >= config.html5['breadcrumbs-level'] %}
+                    <ul class="breadcrumbs">
+                        {% for crumb in links.breadcrumbs %}
+                            {% if loop.last %}
+                                <li class="last_crumb">{{ crumb.title }}</li>
+                            {% else %}
+                                <li class="crumb"><a href="{{ crumb.url }}" class="crumb">{{ crumb.title }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <div class="content">
+                    {{ obj }}
+                    {% if obj.tableofcontents and obj.level <= config.html5['localtoc-level'] %}
+                        <h2 style="margin-top: 50px; paddint-top: 20px; border-top: 2px solid #666666;">Inhalt</h2>
+                        <nav class=local_toc>
+                            <ul>
+                                {% for section in obj.tableofcontents recursive %}
+                                    <li>
+                                        <a href="{{ section.url }}">{{ tocEntry(section) }}</a>
+                                        {% if section.tableofcontents %}
+                                            <ul>
+                                                {{ loop(section.tableofcontents) }}
+                                            </ul>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </nav>
+                    {% endif %}
+                    {% if obj.footnotes %}
+                        <footer id="footnotes">
+                            <ol>
+                                {% for footnote in obj.footnotes %}
+                                    <li id="{{ footnote.id }}">{{ footnote }}</li>
+                                {% endfor %}
+                            </ol>
+                        </footer>
+                    {% endif %}
+                </div>
+
+                <nav class="topnav">
+                    <p><a id="btn-show-all" style="font-family: sans;" class="btn btn-light">Alles ausklappen</a></p>
+                    <p><a id="btn-show-normal" style="font-family: sans;" class="btn btn-light">Standardansicht</a></p>
+                    <p><a id="btn-show-none" style="font-family: sans;" class="btn btn-light">Alles einklappen</a></p>
+                    </ul>
+                </nav>
+                <nav class="prev_up_next">
+                    {% for nav in rendererdata.get('extra-nav', []) %}
+                        {{ icon(nav['icon'], id=nav['id'], class=nav['class']) }}
+                    {% endfor %}
+                    {% if links.prev.url %}
+                        <a href="{{ links.prev.url }}" title="{{ links.prev.title | striptags }}">{{ icon('arrow-left')}}</a>
+                    {% endif %}
+                    {% if links.up.url %}
+                        <a href="{{ links.up.url }}" title="{{ links.up.title | striptags }}">{{ icon('arrow-up')}}</a>
+                    {% endif %}
+                    {% if links.next.url %}
+                        <a href="{{ links.next.url }}" title="{{ links.next.title | striptags }}">{{ icon('arrow-right')}}</a>
+                    {% endif %}
+                    {% if links.index.url %}
+                        <a href="{{ links.index.url }}" class="index">Index</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </div>
+    </div>
+    <footer style="margin-top: 30px; background-color: #eeeeee; border-top: 3px solid gray; padding: 10px;">
+        <div class="container">
+            <p>
+                <a href="https://www.esaga.uni-due.de/ulrich.goertz/">Ulrich Görtz</a>
+                <span class="float-right"><span style="font-family: courier; font-size: 80%">ulrich.goertz@uni-due.de</span></span>
+            </p>
+            <p>
+                <a class="mr-5" href="/">math.ug</a>
+                <a href="/impressum.html">Impressum / About</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

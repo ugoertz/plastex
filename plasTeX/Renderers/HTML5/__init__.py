@@ -83,6 +83,8 @@ class HTML5(_Renderer):
             rendererdata['js'].append(js)
             shutil.copy(os.path.join(srcDir, js), jsBuildDir)
 
+        rendererdata['pdfname'] = config['html5']['pdfname']
+
     def processFileContent(self, document, s):
         s = _Renderer.processFileContent(self, document, s)
 

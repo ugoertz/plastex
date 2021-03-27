@@ -4,6 +4,12 @@ from plasTeX.DOM import Node
 def addConfig(config: ConfigManager):
     section = config.addSection('html5', 'Html5 renderer Options')
 
+    section['pdfname'] = StringOption(
+        """Name of PDF we add a link to""",
+        options='--pdfname',
+        default='',
+    )
+
     section['extra-css'] = MultiStringOption(
         """ Extra css files to use """,
         options='--extra-css',

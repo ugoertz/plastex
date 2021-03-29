@@ -9,6 +9,7 @@ support for your own templating engines.
 
 import sys, os, re, plasTeX, shutil, string
 from io import StringIO
+import pdb
 from plasTeX.Renderers import Renderer as BaseRenderer
 from plasTeX.Renderers.PageTemplate.simpletal import simpleTAL, simpleTALES
 from plasTeX.Renderers.PageTemplate.simpletal.simpleTALES import Context as TALContext
@@ -18,17 +19,13 @@ log = plasTeX.Logging.getLogger()
 # Support for Jinja2 templates
 try:
     from jinja2 import Environment, contextfunction
+    import jinja2.exceptions
 except ImportError:
     def jinja2template(s, encoding='utf8'):
         def renderjinja2(obj):
             return s
         return renderjinja2
 else:
-    try:
-        import ipdb as pdb
-    except ImportError:
-        import pdb # type: ignore # mypy#1153
-
     @contextfunction
     def debug(context):
         pdb.set_trace()
@@ -46,7 +43,14 @@ else:
                      'templates':obj.renderer}
 
             tpl = env.from_string(s)
-            return tpl.render(tvars)
+            try:
+                return tpl.render(tvars)
+            except jinja2.exceptions.TemplateError as e:
+                log.warning('Jinja2 template error: {} while rendering node {}'
+                            ' with source\n {}\n'.format(
+                            e, obj.nodeName, obj.source))
+                return ''
+
 
         return renderjinja2
 

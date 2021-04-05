@@ -115,5 +115,6 @@ name: inquotes
 &raquo;{{ obj.attributes.content }}&laquo
 
 
-
+name: lairef
+{{ obj.attributes.text1 }} <a href="//math.ug/la1-ws2021/{{ obj.attributes.url }}">I.{{ obj.attributes.lbl }}</a>
 
